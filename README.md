@@ -1,5 +1,7 @@
 # Sistema de Atendimento Médico
 
+Para evitar a duplicação de arquivos, criamos esta estrutura de pastas para ambos os projetos de POO e REST:
+
 - `banco/`   → schema.sql e dados.sql (compartilhado)
 - `poo/`     → projeto Java (POO)
 - `backend/` → API Node.js (REST)
