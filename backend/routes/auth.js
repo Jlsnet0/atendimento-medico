@@ -8,16 +8,34 @@ const router = express.Router();
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email || !password || !role) {
             return res.status(400).json({
                 error: 'Missing required fields'
             });
         }
 
+        if (email !== email.toLowerCase()) {
+            return res.status(400).json({
+                error: 'Email must be all lowercase'
+            });
+        }
+
+        if (password.length() < 6) {
+            return res.status(400).json({
+                error: 'Minimal length of password is 6 characters'
+            });
+        }
+
+        if (role !== 'paciente' && role !== 'medico' && role !== 'secretaria') {
+            return res.status(400).json({
+                error: 'Invalid role'
+            })
+        }
+
         const [existing] = await db.query(
-            'SELECT id FROM users WHERE email = ?',
+            'SELECT id FROM usuarios WHERE email = ?',
             [email]
         );
 
@@ -30,8 +48,8 @@ router.post('/register', async (req, res) => {
         const passwordHash = await bcrypt.hash(password, 12);
 
         const [result] = await db.query(
-            'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-            [name, email, passwordHash]
+            "INSERT INTO usuarios (nome, email, senha, perfil) VALUES (?, ?, ?, ?)",
+            [name, email, passwordHash, role]
         );
 
         res.status(201).json({
@@ -61,7 +79,7 @@ router.post('/login', async (req, res) => {
         }
 
         const [users] = await db.query(
-            'SELECT * FROM users WHERE email = ?',
+            'SELECT * FROM usuarios WHERE email = ?',
             [email]
         );
 
@@ -75,7 +93,7 @@ router.post('/login', async (req, res) => {
 
         const validPassword = await bcrypt.compare(
             password,
-            user.password
+            user.senha
         );
 
         if (!validPassword) {
@@ -87,7 +105,8 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(
             {
                 id: user.id,
-                email: user.email
+                email: user.email,
+                perfil: user.perfil
             },
             process.env.JWT_SECRET,
             {

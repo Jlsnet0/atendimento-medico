@@ -11,7 +11,7 @@ CREATE TABLE usuarios (
     crm VARCHAR(20) NULL,
     especialidade VARCHAR(60) NULL,
     cpf CHAR(11) NULL UNIQUE,
-    telefone INT(20) NULL
+    telefone VARCHAR(20) NULL
 );
 
 CREATE TABLE consultas (
