@@ -1,5 +1,6 @@
-CREATE DATABASE IF NOT EXISTS atendimento_medico
-    USE atendimento_medico;
+CREATE DATABASE IF NOT EXISTS atendimento_medico;
+    
+USE atendimento_medico;
 
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -7,10 +8,10 @@ CREATE TABLE usuarios (
     email VARCHAR(120) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     perfil ENUM('medico', 'secretaria', 'paciente') NOT NULL,
-    crm VARCHAR(20) NULL, #apenas médicos
-    especialidade VARCHAR(60) NULL, #apenas médicos
-    cpf CHAR(11) NULL UNIQUE, #apenas pacientes
-    telefone INT(20) NULL, #apenas pacientes
+    crm VARCHAR(20) NULL,
+    especialidade VARCHAR(60) NULL,
+    cpf CHAR(11) NULL UNIQUE,
+    telefone INT(20) NULL
 );
 
 CREATE TABLE consultas (
